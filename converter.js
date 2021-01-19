@@ -105,7 +105,7 @@ function getAccents(input) {
 }
 
 /**
- * Converts string of grammatical accents to string of pronounced accents (Udatta, Anudatta, Svarita, Independent svarita, -)
+ * Converts string of grammatical accents to string of pronounced accents (-, Anudatta, Svarita, Independent svarita)
  *
  * @param input string of grammatical accents
  * @return the corresponding pronounced accents
@@ -138,7 +138,7 @@ function convertAccents(input) {
  * Replaces vowels in input text with same vowels in IAST with the provided svaras
  *
  * @param phonemic the input text (formatted in char/phoneme representation)
- * @param svara the string containing the pronounced svaras (U, A, S, I, -)
+ * @param svara the string containing the pronounced svaras (-, A, S, I)
  * @param dirgha whether to mark dirgha svaritas (not implemented)
  * @param markInd whether to mark independent svaritas with an *
  * @return The input text with vowels replaced with the appropriate IAST representation carrying the svara
@@ -249,13 +249,18 @@ function toIAST(input) {
  * @customfunction
  */
 function convertSentence(input, dirgha, markInd) {
-  var sentence = String(input);
+  if (input.map) {
+    return input.map(convertSentence);
+  }
+  else {
+    var sentence = String(input);
 
-  sentence = toPhonetic(sentence);
-  var svaras = convertAccents(getAccents(sentence));
+    sentence = toPhonetic(sentence);
+    var svaras = convertAccents(getAccents(sentence));
 
-  sentence = addSvaras(sentence, svaras, dirgha, markInd);
-  sentence = toIAST(sentence);
+    sentence = addSvaras(sentence, svaras, dirgha, markInd);
+    sentence = toIAST(sentence);
 
-  return sentence;
+    return sentence;
+  }
 }
